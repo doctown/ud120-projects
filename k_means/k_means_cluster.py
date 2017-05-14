@@ -12,6 +12,7 @@ sys.path.append("../tools/")
 # sys.path.append("/Users/davido/Documents/personal/code/ud120-projects/tools")
 from feature_format import featureFormat, targetFeatureSplit
 from sklearn.cluster import KMeans
+from  sklearn.preprocessing import MinMaxScaler
 
 def Draw(pred, features, poi, mark_poi=False, name="image.png", f1_name="feature 1", f2_name="feature 2"):
     """ some plotting code designed to help you visualize your clusters """
@@ -59,6 +60,9 @@ for f1, f2, f3 in finance_features:
 #plt.show()
 
 m = numpy.matrix(finance_features)
+scaler = MinMaxScaler()
+features = scaler.fit_transform(m)
+
 print("Min salary" + str(min ( i for i in m[:,0] if i > 0)))
 print("Max salary" + str(numpy.max(m[:,0])))
 print("Min options" + str(min ( i for i in m[:,1] if i > 0)))
@@ -66,15 +70,14 @@ print(numpy.nanmin(m[numpy.nonzero(m[:,1])]))
 print("Max options" + str(numpy.max(m[:,1])))
 ### cluster here; create predictions of the cluster labels
 ### for the data and store them to a list called pred
-kmeans = KMeans(n_clusters=4, random_state=0)
-cl_fit = kmeans.fit(finance_features)
+kmeans = KMeans(n_clusters=2, random_state=0)
+cl_fit = kmeans.fit(features)
 pred = cl_fit.predict(finance_features)
 
 
 ### rename the "name" parameter when you change the number of features
 ### so that the figure gets saved to a different file
 try:
-    pass
-    #Draw(pred, finance_features, poi, mark_poi=False, name="clusters_3.pdf", f1_name=feature_1, f2_name=feature_2)
+    Draw(pred, finance_features, poi, mark_poi=False, name="clusters_3.pdf", f1_name=feature_1, f2_name=feature_2)
 except NameError:
     print "no predictions object named pred found, no clusters to plot"
